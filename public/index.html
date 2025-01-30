@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase-1</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Phase-1</a></li>
+                <li><a href="phase2.html">Phase-2</a></li>
+                <li><a href="misnew.html">MIS-New</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="header-container">
+            <h2 class="table-title">GIPCL-SLPP Phase-1 DSM Monitoring</h2>
+            <span class="date-time">
+                Date: <span id="current-date" style="padding: 0 15px;"></span>
+                Time: <span id="current-time" style="padding: 0 15px;"></span>
+                DC Rev.No: 1 <span id="dc-rev" style="padding: 0 15px;"></span>
+                SG Rev.No: 1 <span id="sg-rev" style="padding: 0 15px;"></span>
+            </span>
+        </div>
+        <div class="tables-container">
+            <table class="Previous-Block-table">
+                <caption class="Previous-Block-caption">
+                    Previous Block
+                </caption>
+                <tbody class="Previous-Block-tbody">
+
+                </tbody>
+            </table>
+
+            <table class="Current-Block-table">
+                <caption class="Current-Block-caption">Current Block</caption>
+                <tbody class="Current-Block-table tbody">
+
+                </tbody>
+            </table>
+            <div class="table-containerss">
+                <table class="Previous-Block-Status-table">
+                    <caption class="Previous-Block-Status-caption">Previous Block Status</caption>
+                    <thead>
+                        <tr>
+                            <th style="color: #00bbbb;">Block.No</th>
+                            <th style="color: #00bbbb;">Frequency</th>
+                            <th style="color: #00bbbb;">SG</th>
+                            <th style="color: #00bbbb;">Net.Export</th>
+                            <th style="color: #00bbbb;">Dev.MW</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+                <table class="Fuel-Cost-Frequency-table">
+                    <caption class="Fuel-Cost-Frequency-caption">Fuel Cost / Frequency</caption>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+                <table class="Next-Block-table">
+                    <caption class="Next-Block-caption">Next Block</caption>
+                    <thead>
+                        <tr>
+                            <th style="color: #00a9a9;">Block No</th>
+                            <th style="color: #00a9a9;">Block Time</th>
+                            <th style="color: #00a9a9;">DC MW</th>
+                            <th style="color: #00a9a9;">SG MW</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: white;">
+
+                    </tbody>
+                </table>
+
+                <table class="Normal-Rate-table">
+                    <caption class="Normal-Rate-caption">Normal Rate</caption>
+                    <thead>
+                        <tr>
+                            <th style="color: #00a9a9;">Block No</th>
+                            <th style="color: #00a9a9;">DAM (Rs)</th>
+                            <th style="color: #00a9a9;">RTM (Rs)</th>
+                            <th style="color: #00a9a9;">NRATE (Rs)</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: white;">
+
+                    </tbody>
+                </table>
+            </div>
+
+            <table class="Cumulative-table">
+                <caption class="Cumulative-caption"> Cumm. Upto Pre Blk</caption>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tables-containers">
+            <table class="Real-Time-Generation-Data-table">
+                <caption class="Real-Time-Generation-Data-caption">
+                    Real Time Generation Data
+                </caption>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th style="color: #00ffff;">MW</th>
+                        <th style="color: #00ffff;">MVAR</th>
+                        <th style="color: #00ffff;">VOLT(kV)</th>
+                        <th style="color: #00ffff;">AMP (I)</th>
+                        <th style="color: #00ffff;">PF</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+
+            <table class="Real-Time-Exp-Imp-Data-table">
+                <caption class="Real-Time-Exp-Imp-Data-caption">
+                    Real Time Exp / Imp Data
+                </caption>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th style="color: #00ffff;">EXP MW</th>
+                        <th style="color: #00ffff;">IMP MVV</th>
+                        <th style="color: #00ffff;">MVAR</th>
+                        <th style="color: #00ffff;">VOLT(kV)</th>
+                        <th style="color: #00ffff;">AMP (I)</th>
+                        <th style="color: #00ffff;">PF</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            // Format date as DD/MM/YYYY
+            const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            const formattedDate = now.toLocaleDateString('en-GB', dateOptions);
+            // Format time as HH:MM:SS
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const formattedTime = now.toLocaleTimeString('en-GB', timeOptions);
+            // Update the HTML elements with the current date and time
+            document.getElementById('current-date').textContent = formattedDate;
+            document.getElementById('current-time').textContent = formattedTime;
+        }
+        // Call the function to set the initial date and time
+        updateDateTime();
+        // Optionally, update the time every second
+        setInterval(updateDateTime, 1000);
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/EMS_Network/WebData');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                console.log(data); // Log the fetched data
+
+                // Filter the data for ID 1, ID 2, ID 3, and ID 4 (Cumm. Upto Pre Blk)
+                const previousBlockData = data.find(item => item.ID === 1);
+                const currentBlockData = data.find(item => item.ID === 2);
+                const previousBlockStatus = data.find(item => item.ID === 3);
+                const cummUptoPreBlk = data.find(item => item.ID === 4);
+                const realTimeGenerationData = data.find(item => item.ID === 5);
+                const realTimeExpImpData = data.find(item => item.ID === 6);
+
+                // Assuming the data is an object with properties that match the table rows
+                const previousBlockTbody = document.querySelector('.Previous-Block-tbody');
+                const currentBlockTbody = document.querySelector('.Current-Block-table tbody');
+                const previousBlockStatusTbody = document.querySelector('.Previous-Block-Status-table tbody');
+                const fuelCostFrequencyTbody = document.querySelector('.Fuel-Cost-Frequency-table tbody');
+                const nextBlockTbody = document.querySelector('.Next-Block-table tbody');
+                const normalRateTbody = document.querySelector('.Normal-Rate-table tbody'); // Select the Normal Rate table tbody
+                const cumulativeTbody = document.querySelector('.Cumulative-table tbody'); // Select the Cumulative table tbody
+                const realTimeGenerationTbody = document.querySelector('.Real-Time-Generation-Data-table tbody');
+                const realTimeExpImpTbody = document.querySelector('.Real-Time-Exp-Imp-Data-table tbody')
+
+
+                // Clear existing rows
+                previousBlockTbody.innerHTML = '';
+                currentBlockTbody.innerHTML = '';
+                previousBlockStatusTbody.innerHTML = '';
+                fuelCostFrequencyTbody.innerHTML = '';
+                nextBlockTbody.innerHTML = '';
+                normalRateTbody.innerHTML = ''; // Clear Normal Rate table
+                cumulativeTbody.innerHTML = ''; // Clear Cumulative table
+                realTimeGenerationTbody.innerHTML = '';
+                realTimeExpImpTbody.innerHTML = '';
+
+                // Populate the Previous Block table with ID 1 data
+                const previousBlockRows = [
+                    { label: 'Block No', value: previousBlockData.P1 },
+                    { label: 'Block Time', value: previousBlockData.P2 },
+                    { label: 'Dec.Capacity(MW)', value: previousBlockData.P3 },
+                    { label: 'Sch.Generation(MW)', value: previousBlockData.P4 },
+                    { label: 'Backing Down (MW)', value: previousBlockData.P5 },
+                    { label: 'Exp./SG%', value: previousBlockData.P6 },
+                    { label: 'Avg.Frequency(Hz)', value: previousBlockData.P7 },
+                    { label: 'Avg.Export(MW)', value: previousBlockData.P8 },
+                    { label: 'DS(MW)', value: previousBlockData.P9 },
+                    { label: 'Normal Rate(Rs)', value: previousBlockData.P10 },
+                    { label: 'DS Rate(Rs)', value: previousBlockData.P11 },
+                    { label: 'DS(Rs)', value: previousBlockData.P12 },
+                    { label: 'Additional DS(Rs)', value: previousBlockData.P13 },
+                    { label: 'Total DS(Rs)', value: previousBlockData.P14 },
+                    { label: 'Fuel Cost(Rs)', value: previousBlockData.P15 },
+                    { label: 'Net Profit/Lose(Rs)', value: previousBlockData.P16 },
+                    { label: 'MVAr(-97% of V)', value: previousBlockData.P17 },
+                    { label: 'Gain/Lose(Rs)', value: previousBlockData.P18 },
+                    { label: 'MVAr(-103% of V)', value: previousBlockData.P19 },
+                    { label: 'Gain/Lose(Rs)', value: previousBlockData.P20 },
+                ];
+
+                previousBlockRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td style="color: #00ffff;">${row.label}</td>
+                    <td style="color: ${typeof row.value === 'number' ? (row.value < 0 ? 'red' : 'white') : 'white'};">
+                    ${row.value !== null ? (row.value < 0 ? `<span style="color: red;">${row.value}</span>` : row.value) : ''}
+                    </td>
+                `;
+                    previousBlockTbody.appendChild(tr);
+                });
+
+                // Populate the Current Block table with ID 2 data
+                const currentBlockRows = [
+                    { label: 'Block No', value: currentBlockData.P1 },
+                    { label: 'Block Time', value: currentBlockData.P2 },
+                    { label: 'Time Left', value: currentBlockData.P3 }, // Assuming this is available in ID 2 data
+                    { label: 'Dec.Capacity(MW)', value: currentBlockData.P4 },
+                    { label: 'Sch.Generation(MW)', value: currentBlockData.P5 },
+                    { label: 'Backing Down(MW)', value: currentBlockData.P6 },
+                    { label: 'Exp./SG%', value: currentBlockData.P7 },
+                    { label: 'Inst.Frequency(Hz)', value: currentBlockData.P8 },
+                    { label: 'Inst.Export(MW)', value: currentBlockData.P9 },
+                    { label: 'Avg.Frequency(Hz)', value: currentBlockData.P10 },
+                    { label: 'Avg.Export(MW)', value: currentBlockData.P11 },
+                    { label: 'DS(MW)', value: currentBlockData.P12 },
+                    { label: 'Normal Rate(Rs)', value: currentBlockData.P13 },
+                    { label: 'DS Rate(Rs)', value: currentBlockData.P14 },
+                    { label: 'DS(Rs)', value: currentBlockData.P15 },
+                    { label: 'Additional DS(Rs)', value: currentBlockData.P16 },
+                    { label: 'Total DS(Rs)', value: currentBlockData.P17 },
+                    { label: 'Fuel Cost(Rs)', value: currentBlockData.P18 },
+                    { label: 'Net Profit/Lose(Rs)', value: currentBlockData.P19 },
+                    { label: 'MVAr(-97% of V)', value: currentBlockData.P20 },
+                    { label: 'Gain/Lose(Rs)', value: currentBlockData.P21 },
+                    { label: 'MVAr(-103% of V)', value: currentBlockData.P22 },
+                    { label: 'Gain/Lose(Rs)', value: currentBlockData.P23 },
+                ];
+
+                currentBlockRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td style="color: #cccc00;">${row.label}</td>
+                    <td style="color: ${typeof row.value === 'number' ? (row.value < 0 ? 'red' : '#00e800') : '#00e800'};">
+                    ${row.value !== null ? (row.value < 0 ? `<span style="color: red;">${row.value}</span>` : row.value) : ''}
+                    </td>
+            `;
+                    currentBlockTbody.appendChild(tr);
+                });
+
+                // Populate the Previous Block Status table with ID 3 data
+                const previousBlockStatusRows = [
+                    { blockNo: previousBlockStatus.P1, frequency: previousBlockStatus.P7, sg: previousBlockStatus.P13, netExport: previousBlockStatus.P19, devMW: previousBlockStatus.P25 },
+                    { blockNo: previousBlockStatus.P2, frequency: previousBlockStatus.P8, sg: previousBlockStatus.P14, netExport: previousBlockStatus.P20, devMW: previousBlockStatus.P7 },
+                    { blockNo: previousBlockStatus.P3, frequency: previousBlockStatus.P9, sg: previousBlockStatus.P15, netExport: previousBlockStatus.P21, devMW: previousBlockStatus.P8 },
+                    { blockNo: previousBlockStatus.P4, frequency: previousBlockStatus.P10, sg: previousBlockStatus.P16, netExport: previousBlockStatus.P22, devMW: previousBlockStatus.P9 },
+                    { blockNo: previousBlockStatus.P5, frequency: previousBlockStatus.P11, sg: previousBlockStatus.P17, netExport: previousBlockStatus.P23, devMW: previousBlockStatus.P4 },
+                    { blockNo: previousBlockStatus.P6, frequency: previousBlockStatus.P12, sg: previousBlockStatus.P18, netExport: previousBlockStatus.P24, devMW: previousBlockStatus.P5 },
+                    { blockNo: 'Average', frequency: previousBlockStatus.P1, sg: previousBlockStatus.P15, netExport: previousBlockStatus.P13, devMW: previousBlockStatus.P25 },
+                ];
+
+                previousBlockStatusRows.forEach(row => {
+                    const tr = document.createElement('tr');
+
+                    // Check if the row is the 'Average' row and apply specific color logic
+                    const getColor = (value) => {
+                        if (row.blockNo === 'Average') {
+                            return value < 0 ? 'red' : '#00e800';
+                        }
+                        return value < 0 ? 'red' : 'white';
+                    };
+
+                    // Generate table row with conditional color styling
+                    tr.innerHTML = `
+                    <td style="color: ${row.blockNo === 'Average' ? '#00e800' : 'white'};">${row.blockNo}</td>
+                    <td style="color: ${getColor(row.frequency)};">${row.frequency}</td>
+                    <td style="color: ${getColor(row.sg)};">${row.sg}</td>
+                    <td style="color: ${getColor(row.netExport)};">${row.netExport}</td>
+                    <td style="color: ${getColor(row.devMW)};">${row.devMW}</td>
+                     `;
+                    previousBlockStatusTbody.appendChild(tr);
+                });
+
+
+
+                // Populate the Fuel Cost / Frequency table
+                const fuelCostFrequencyRows = [
+                    { label: 'ACP(RS./kWh)', value: previousBlockData.P1 },
+                    { label: 'Fuel Cost Ph-1(Rs./kWh)', value: previousBlockData.P2 },
+                    { label: 'Avg.Freq.up to prev.block', value: previousBlockData.P4 },
+                ];
+
+                fuelCostFrequencyRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: #00ffff;">${row.label}</td>
+                <td style="color: white;">${row.value !== null ? row.value : ''}</td>
+            `;
+                    fuelCostFrequencyTbody.appendChild(tr);
+                });
+
+                const nextBlockRows = [
+                    { blockNo: previousBlockStatus.P1, blockTime: '02:00-02:15', dcMW: previousBlockData.P5, sgMW: previousBlockData.P9 }, // Example data
+                    { blockNo: previousBlockStatus.P2, blockTime: '02:15-02:30', dcMW: previousBlockData.P6, sgMW: previousBlockData.P10 }, // Example data
+                    { blockNo: previousBlockStatus.P3, blockTime: '02:30-02:45', dcMW: previousBlockData.P7, sgMW: previousBlockData.P11 }, // Example data
+                    { blockNo: previousBlockStatus.P4, blockTime: '02:45-03:00', dcMW: previousBlockData.P8, sgMW: previousBlockData.P12 }, // Example data
+                ];
+
+                nextBlockRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: white;">${row.blockNo}</td>
+                <td style="color: white;">${row.blockTime}</td>
+                <td style="color: white;">${row.dcMW}</td>
+                <td style="color: white;">${row.sgMW}</td>
+            `;
+                    nextBlockTbody.appendChild(tr);
+                });
+
+                // Populate the Normal Rate table with data from previousBlockStatus
+                const normalRateRows = [
+                    { blockNo: previousBlockStatus.P1, damRate: previousBlockStatus.P2, rtmRate: previousBlockStatus.P3, nrate: previousBlockStatus.P4 },
+                    { blockNo: previousBlockStatus.P2, damRate: previousBlockStatus.P5, rtmRate: previousBlockStatus.P6, nrate: previousBlockStatus.P7 },
+                    { blockNo: previousBlockStatus.P3, damRate: previousBlockStatus.P8, rtmRate: previousBlockStatus.P9, nrate: previousBlockStatus.P10 },
+                    { blockNo: previousBlockStatus.P4, damRate: previousBlockStatus.P11, rtmRate: previousBlockStatus.P12, nrate: previousBlockStatus.P13 },
+                ];
+
+                normalRateRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: white;">${row.blockNo}</td>
+                <td style="color: white;">${row.damRate}</td>
+                <td style="color: white;">${row.rtmRate}</td>
+                <td style="color: white;">${row.nrate}</td>
+            `;
+                    normalRateTbody.appendChild(tr);
+                });
+
+                // Populate the Cumulative table with data from cummUptoPreBlk
+                const cumulativeRows = [
+                    { label: 'Station Gen(MWh)', value: cummUptoPreBlk.P1 },
+                    { label: 'Gen-1(MWh)', value: cummUptoPreBlk.P2 },
+                    { label: 'Gen-2(MWh)', value: cummUptoPreBlk.P3 },
+                    { label: 'DC(MWh)', value: cummUptoPreBlk.P4 },
+                    { label: 'SG(MWh)', value: cummUptoPreBlk.P5 },
+                    { label: 'Backing Down(MWh)', value: cummUptoPreBlk.P6 },
+                    { label: 'Exp./SG%', value: cummUptoPreBlk.P7 },
+                    { label: 'Export(MWh)', value: cummUptoPreBlk.P8 },
+                    { label: 'Import(MWh)', value: cummUptoPreBlk.P9 },
+                    { label: 'Net Export(MWh)', value: cummUptoPreBlk.P10 },
+                    { label: 'DS(MW)', value: cummUptoPreBlk.P11 },
+                    { label: 'DS(Rs)', value: cummUptoPreBlk.P12 },
+                    { label: 'Additional DS(Rs)', value: cummUptoPreBlk.P13 },
+                    { label: 'Total DS(Rs)', value: cummUptoPreBlk.P14 },
+                    { label: 'Fuel Cost(Rs)', value: cummUptoPreBlk.P15 },
+                    { label: 'Net Profit/Lose(Rs)', value: cummUptoPreBlk.P16 },
+                    { label: 'MVAr(-97% of V)', value: cummUptoPreBlk.P17 },
+                    { label: 'Gain/Lose(Rs)', value: cummUptoPreBlk.P18 },
+                    { label: 'MVAr(-103% of V)', value: cummUptoPreBlk.P19 },
+                    { label: 'Gain/Lose(Rs)', value: cummUptoPreBlk.P20 },
+                ];
+
+                cumulativeRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: #00a9a9;">${row.label}</td>
+                <td style="color: ${typeof row.value === 'number' ? (row.value < 0 ? 'red' : 'white') : 'white'};">${row.value !== null ? row.value : ''}</td>
+            `;
+                    cumulativeTbody.appendChild(tr);
+                });
+
+                const realTimeRows = [
+                    { label: 'GEN-1', mw: realTimeGenerationData.P1, mvar: realTimeGenerationData.P2, volt: realTimeGenerationData.P3, amp: realTimeGenerationData.P4, pf: realTimeGenerationData.P5 },
+                    { label: 'GEN-2', mw: realTimeGenerationData.P6, mvar: realTimeGenerationData.P7, volt: realTimeGenerationData.P8, amp: realTimeGenerationData.P9, pf: realTimeGenerationData.P10 },
+                    { label: 'TOTAL', mw: realTimeGenerationData.P11, mvar: realTimeGenerationData.P12, volt: '', amp: '', pf: '' }, // Assuming TOTAL does not have volt, amp, pf
+                    { label: 'Inst.Aux.Cons(MWh)', mw: '', mvar: realTimeGenerationData.P13, volt: 'Inst.Aux.Cons(%)', amp: '', pf: realTimeGenerationData.P14 },
+                    { label: 'Cumm.Aux.Cons(MWh)', mw: '', mvar: realTimeGenerationData.P15, volt: 'Cumm.Aux.Cons(%)', amp: '', pf: realTimeGenerationData.P16 }
+                ];
+
+                realTimeRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: #00ffff;">${row.label}</td>
+                <td style="color: white;">${row.mw}</td>
+                <td style="color: white;">${row.mvar}</td>
+                <td style="color: white;">${row.volt}</td>
+                <td style="color: white;">${row.amp}</td>
+                <td style="color: white;">${row.pf}</td>
+            `;
+                    realTimeGenerationTbody.appendChild(tr);
+                });
+
+                const expImpRows = [
+                    { label: 'KJ', expMW: realTimeExpImpData.P1, impMVV: realTimeExpImpData.P2, mvar: realTimeExpImpData.P3, volt: realTimeExpImpData.P4, amp: realTimeExpImpData.P5, pf: realTimeExpImpData.P6 },
+                    { label: 'GV-4', expMW: realTimeExpImpData.P7, impMVV: realTimeExpImpData.P8, mvar: realTimeExpImpData.P9, volt: realTimeExpImpData.P10, amp: realTimeExpImpData.P11, pf: realTimeExpImpData.P12 },
+                    { label: 'ZL-1', expMW: realTimeExpImpData.P13, impMVV: realTimeExpImpData.P14, mvar: realTimeExpImpData.P15, volt: realTimeExpImpData.P16, amp: realTimeExpImpData.P17, pf: realTimeExpImpData.P18 },
+                    { label: 'ZL-2', expMW: realTimeExpImpData.P19, impMVV: realTimeExpImpData.P20, mvar: realTimeExpImpData.P21, volt: realTimeExpImpData.P22, amp: realTimeExpImpData.P23, pf: realTimeExpImpData.P24 },
+                    { label: 'I/C-A', expMW: realTimeExpImpData.P1, impMVV: realTimeExpImpData.P2, mvar: realTimeExpImpData.P3, volt: realTimeExpImpData.P4, amp: realTimeExpImpData.P5, pf: realTimeExpImpData.P6 },
+                    { label: 'I/C-B', expMW: realTimeExpImpData.P7, impMVV: realTimeExpImpData.P8, mvar: realTimeExpImpData.P9, volt: realTimeExpImpData.P10, amp: realTimeExpImpData.P11, pf: realTimeExpImpData.P12 },
+                    { label: 'TOTAL', expMW: realTimeExpImpData.P13, impMVV: realTimeExpImpData.P14, mvar: realTimeExpImpData.P15, volt: realTimeExpImpData.P16, amp: '', pf: '' }, // Assuming TOTAL does not have volt, amp, pf
+                ];
+
+                expImpRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: #00ffff;">${row.label}</td>
+                <td style="color: white;">${row.expMW}</td>
+                <td style="color: white;">${row.impMVV}</td>
+                <td style="color: white;">${row.mvar}</td>
+                <td style="color: white;">${row.volt}</td>
+                <td style="color: white;">${row.amp}</td>
+                <td style="color: white;">${row.pf}</td>
+            `;
+                    realTimeExpImpTbody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        // Call fetchData when the page loads
+        window.onload = function () {
+            fetchData();
+        };
+    </script>
+</body>
+
+</html>

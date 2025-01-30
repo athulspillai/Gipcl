@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIS-New</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Phase-1</a></li>
+                <li><a href="phase2.html">Phase-2</a></li>
+                <li><a href="misnew.html">MIS-New</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="header-container">
+            <h2 class="table-title">GIPCL-SLPP DSM Monitoring</h2>
+            <span class="date-time">
+                Date: <span id="current-date" style="padding: 0 15px;"></span>
+                Time: <span id="current-time" style="padding: 0 15px;"></span>
+                DC Rev.No: 1 <span id="dc-rev" style="padding: 0 15px;"></span>
+                SG Rev.No: 1 <span id="sg-rev" style="padding: 0 15px;"></span>
+            </span>
+        </div>
+
+        <div class="tables-containerss">
+            <table class="Real-Time-table">
+                <caption class="Real-Time-caption">Real Time Value</caption>
+                <thead class="Real-Time-table-tbody">
+                    <tr>
+                        <th colspan="3" style="text-align: center; color: red; padding: 10px;">SLPP Phase-1</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th style="color: #00a9a9;">MW</th>
+                        <th style="color: #00a9a9;">MVAr</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+
+                <thead>
+                    <tr>
+                        <th colspan="3" style="text-align: center; color: red; padding: 10px;">SLPP Phase-2</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th style="color: #00a9a9;">MW</th>
+                        <th style="color: #00a9a9;">MVAr</th>
+                    </tr>
+                </thead>
+                <tbody class="SLPP-Phase-2">
+                    <!-- SLPP Phase-2 data will be populated here -->
+                </tbody>
+
+                <thead>
+                    <tr>
+                        <th colspan="3" style="text-align: center; color: red; padding: 10px;">SLPP</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th style="color: #00a9a9;">MW</th>
+                        <th style="color: #00a9a9;">MVAr</th>
+                    </tr>
+                </thead>
+                <tbody class="SLPP">
+
+                </tbody>
+            </table>
+
+            <table class="Misnew-Current-Blocks-table">
+
+            </table>
+
+            <table class="Misnew-Cumulatives-table">
+                <caption class="Misnew-Cumulatives-caption"> Cumm. Upto Pre Blk</caption>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th style="color: red;">SLPP-1</th>
+                        <th style="color: red;">SLPP-2</th>
+                        <th style="color: red;">SLPP</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+
+                <tr>
+                    <th colspan="4" style="text-align: center; color: red; padding: 10px;">REACTIVE POWER</th>
+                </tr>
+                <tbody class="REACTIVE-POWER">
+
+                </tbody>
+
+                <tr>
+                    <th colspan="4" style="text-align: center; color: red; padding: 10px;">TOTAL</th>
+                </tr>
+                <tbody class="TOTAL">
+                   
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="tabless-containerss">
+            <table class="Acp-Fuel-Cost-Frequency-table">
+                <caption class="Acp-Fuel-Cost-Frequency-caption">
+                    ACP/Fuel Cost/Frequency
+                </caption>
+                <tbody>
+
+                </tbody>
+            </table>
+
+            <table class="Normal-Rate-table">
+                <caption class="Normal-Rate-caption">
+                    Normal Rate
+                </caption>
+                <thead>
+                    <tr>
+                        <th style="color: #00ffff;">Block No</th>
+                        <th style="color: #00ffff;">DAM(Rs)</th>
+                        <th style="color: #00ffff;">RTM(RS)</th>
+                        <th style="color: #00ffff;">NRATE(Rs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+
+        </div>
+    </main>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            // Format date as DD/MM/YYYY
+            const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            const formattedDate = now.toLocaleDateString('en-GB', dateOptions);
+            // Format time as HH:MM:SS
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const formattedTime = now.toLocaleTimeString('en-GB', timeOptions);
+            // Update the HTML elements with the current date and time
+            document.getElementById('current-date').textContent = formattedDate;
+            document.getElementById('current-time').textContent = formattedTime;
+        }
+        // Call the function to set the initial date and time
+        updateDateTime();
+        // Optionally, update the time every second
+        setInterval(updateDateTime, 1000);
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/EMS_Network/WebData');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                console.log(data);
+
+                const realTimeValue = data.find(item => item.ID === 13);
+                const currentBlockData = data.find(item => item.ID === 14);
+                const cummUptoPreBlkData = data.find(item => item.ID === 15);
+                const acpFuelCostFrequency = data.find(item => item.ID === 16);
+                const normalRate = data.find(item => item.ID === 17);
+
+                // Populate the SLPP Phase-1 tbody
+                const realTimeValueTbody = document.querySelector('.Real-Time-table tbody');
+                const realTimeValueSLPPPhase2 = document.querySelector('.SLPP-Phase-2');
+                const realTimeValueSLPP = document.querySelector('.SLPP');
+                const currentBlockTable = document.querySelector('.Misnew-Current-Blocks-table');
+                const cummUptoPreBlkTable = document.querySelector('.Misnew-Cumulatives-table tbody')
+                const cummUptoPreBlkREACTIVEPOWERTable = document.querySelector('.REACTIVE-POWER')
+                const cummUptoPreBlkTOTAL = document.querySelector('.TOTAL')
+                const acpFuelCostFrequencyTable = document.querySelector('.Acp-Fuel-Cost-Frequency-table tbody');
+                const normalRateTable = document.querySelector('.Normal-Rate-table tbody');
+
+
+                realTimeValueTbody.innerHTML = ''; // Clear existing rows
+                realTimeValueSLPPPhase2.innerHTML = ''; // Clear existing rows
+                realTimeValueSLPP.innerHTML = '';
+                cummUptoPreBlkTable.innerHTML = '';
+                cummUptoPreBlkREACTIVEPOWERTable.innerHTML = '';
+                cummUptoPreBlkTOTAL.innerHTML = '';
+                acpFuelCostFrequencyTable.innerHTML = '';
+                normalRateTable.innerHTML = '';
+
+                const realTimeValueRows = [
+                    { label: 'GEN-1', mw: realTimeValue.P1, mvar: realTimeValue.P2 },
+                    { label: 'GEN-2', mw: realTimeValue.P3, mvar: realTimeValue.P4 },
+                    { label: 'TOTAL GEN', mw: realTimeValue.P5, mvar: realTimeValue.P6 },
+                    { label: 'NET EXP', mw: realTimeValue.P7, mvar: realTimeValue.P8 },
+                    { label: 'APC', mw: realTimeValue.P9, mvar: realTimeValue.P10 },
+                    { label: '%APC', mw: realTimeValue.P11, mvar: '' },
+                ];
+
+                realTimeValueRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="color: #00a9a9;">${row.label}</td>
+                        <td style="color: white;">${row.mw}</td>
+                        <td style="color: white;">${row.mvar}</td>
+                    `;
+                    realTimeValueTbody.appendChild(tr);
+                });
+
+                const realTimeValueSLPPPhase2Rows = [
+                    { label: 'GEN-3', mw: realTimeValue.P12, mvar: realTimeValue.P13 },
+                    { label: 'GEN-4', mw: realTimeValue.P14, mvar: realTimeValue.P15 },
+                    { label: 'TOTAL GEN', mw: realTimeValue.P16, mvar: realTimeValue.P17 },
+                    { label: 'NET EXP', mw: realTimeValue.P18, mvar: realTimeValue.P19 },
+                    { label: 'APC', mw: realTimeValue.P20, mvar: realTimeValue.P21 },
+                    { label: '%APC', mw: realTimeValue.P22, mvar: '' },
+                ];
+
+                realTimeValueSLPPPhase2Rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="color: #00a9a9;">${row.label}</td>
+                        <td style="color: white;">${row.mw}</td>
+                        <td style="color: white;">${row.mvar}</td>
+                    `;
+                    realTimeValueSLPPPhase2.appendChild(tr);
+                });
+
+                const realTimeSLPPRows = [
+                    { label: 'TOTAL GEN', mw: realTimeValue.P23, mvar: realTimeValue.P24 },
+                    { label: 'NET EXP', mw: realTimeValue.P25, mvar: realTimeValue.P1 },
+                    { label: 'APC', mw: realTimeValue.P2, mvar: realTimeValue.P3 },
+                    { label: '%APC', mw: realTimeValue.P4, mvar: '' },
+                ]
+
+                realTimeSLPPRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="color: #00a9a9;">${row.label}</td>
+                        <td style="color: white;">${row.mw}</td>
+                        <td style="color: white;">${row.mvar}</td>
+                    `;
+                    realTimeValueSLPP.appendChild(tr)
+                })
+
+                currentBlockTable.innerHTML = `
+                <caption class="Misnew-Current-Blocks-table-caption">Current Block</caption>
+                <thead>
+                    <tr>
+                        <td style="color: #e9e900;">Inst.Frequency(Hz)</td>
+                        <td style="color: #00b800;">${currentBlockData.P1}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Avg.Frequency(Hz)</td>
+                        <td style="color: #00b800;">${currentBlockData.P2}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Normal Rate(Rs)</td>
+                        <td style="color: #00b800;">${currentBlockData.P3}</td>
+                    </tr>
+                </thead>
+                <thead>
+                   <tr>
+                        <td></td>
+                        <td style="color: red;">SLPP-1</td>
+                        <td style="color: red;">SLPP-2</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: #e9e900;">Dec.Capacity(MW)</td>
+                        <td style="color: #00b800;">${currentBlockData.P4}</td>
+                        <td style="color: #00b800;">${currentBlockData.P5}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Sch.Generation(MW)</td>
+                        <td style="color: #00b800;">${currentBlockData.P6}</td>
+                        <td style="color: #00b800;">${currentBlockData.P7}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Backing Down(MW)</td>
+                        <td style="color: #00b800;">${currentBlockData.P8}</td>
+                        <td style="color: #00b800;">${currentBlockData.P9}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Exp./SG%</td>
+                        <td style="color: #00b800;">${currentBlockData.P10}</td>
+                        <td style="color: #00b800;">${currentBlockData.P11}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Inst.Export(MW)</td>
+                        <td style="color: #00b800;">${currentBlockData.P12}</td>
+                        <td style="color: #00b800;">${currentBlockData.P13}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Avg.Export(MW)</td>
+                        <td style="color: #00b800;">${currentBlockData.P14}</td>
+                        <td style="color: #00b800;">${currentBlockData.P15}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">DS(MW)</td>
+                        <td style="color: red">${currentBlockData.P16}</td>
+                        <td style="color: red">${currentBlockData.P17}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">DS Rate(Rs)</td>
+                        <td style="color: #00b800;">${currentBlockData.P18}</td>
+                        <td style="color: #00b800;">${currentBlockData.P19}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Total DS(Rs)</td>
+                        <td style="color: red">${currentBlockData.P20}</td>
+                        <td style="color: red">${currentBlockData.P21}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Fuel Cost(Rs)</td>
+                        <td style="color: red">${currentBlockData.P22}</td>
+                        <td style="color: red">${currentBlockData.P23}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Net Profit/Lose(Rs)</td>
+                        <td style="color: red">${currentBlockData.P24}</td>
+                        <td style="color: red">${currentBlockData.P25}</td>
+                    </tr>
+                </tbody>
+
+                <tr>
+                    <th colspan="3" style="text-align: center; color: red; padding: 10px;">REACTIVE POWER</th>
+                </tr>
+                <tbody>
+                    <tr>
+                        <td style="color: #e9e900;">MVAr (<97% of V)</td>
+                        <td style="color: #00b800;">${currentBlockData.P1}</td>
+                        <td style="color: #00b800;">${currentBlockData.P2}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Gain/Lose(Rs)</td>
+                        <td style="color: #00b800;">${currentBlockData.P3}</td>
+                        <td style="color: #00b800;">${currentBlockData.P4}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">MVAr (>103% of V)</td>
+                        <td style="color: #00b800;">${currentBlockData.P5}</td>
+                        <td style="color: #00b800;">${currentBlockData.P6}</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #e9e900;">Gain/Lose(Rs)</td>
+                        <td style="color: red">${currentBlockData.P7}</td>
+                        <td style="color: red">${currentBlockData.P8}</td>
+                    </tr>
+                </tbody>
+            `;
+
+                const cummUptoPreBlkRows = [
+                    { label: 'Gen-1/3(MWh)', value1: cummUptoPreBlkData.P1, value2: cummUptoPreBlkData.P2, value3: cummUptoPreBlkData.P3 },
+                    { label: 'Gen-2/4(MWh)', value1: cummUptoPreBlkData.P4, value2: cummUptoPreBlkData.P5, value3: cummUptoPreBlkData.P6 },
+                    { label: 'Station Gen(MWh)', value1: cummUptoPreBlkData.P7, value2: cummUptoPreBlkData.P8, value3: cummUptoPreBlkData.P9 },
+                    { label: 'PLF(%)', value1: cummUptoPreBlkData.P10, value2: cummUptoPreBlkData.P11, value3: cummUptoPreBlkData.P12 },
+                    { label: 'APC(MWh)', value1: cummUptoPreBlkData.P13, value2: cummUptoPreBlkData.P14, value3: cummUptoPreBlkData.P15 },
+                    { label: 'APC(%)', value1: cummUptoPreBlkData.P16, value2: cummUptoPreBlkData.P17, value3: cummUptoPreBlkData.P18 },
+                    { label: 'DC(MWh)', value1: cummUptoPreBlkData.P19, value2: cummUptoPreBlkData.P20, value3: cummUptoPreBlkData.P21 },
+                    { label: 'SG(MWh)', value1: cummUptoPreBlkData.P22, value2: cummUptoPreBlkData.P23, value3: cummUptoPreBlkData.P24 },
+                    { label: 'Backing Down(MWh)', value1: cummUptoPreBlkData.P25, value2: cummUptoPreBlkData.P1, value3: cummUptoPreBlkData.P2 },
+                    { label: 'Net Export(MWh)', value1: cummUptoPreBlkData.P3, value2: cummUptoPreBlkData.P4, value3: cummUptoPreBlkData.P5 },
+                    { label: 'Exp./SG%', value1: cummUptoPreBlkData.P6, value2: cummUptoPreBlkData.P7, value3: cummUptoPreBlkData.P8 },
+                    { label: 'DS(MW)', value1: cummUptoPreBlkData.P9, value2: cummUptoPreBlkData.P10, value3: cummUptoPreBlkData.P11 },
+                    { label: 'Total DS(Rs)', value1: cummUptoPreBlkData.P12, value2: cummUptoPreBlkData.P13, value3: cummUptoPreBlkData.P14 },
+                    { label: 'Fuel Cost(Rs)', value1: cummUptoPreBlkData.P15, value2: cummUptoPreBlkData.P16, value3: cummUptoPreBlkData.P17 },
+                    { label: 'Net Profit/Loss(Rs)', value1: cummUptoPreBlkData.P18, value2: cummUptoPreBlkData.P19, value3: cummUptoPreBlkData.P20 },
+                ];
+
+                cummUptoPreBlkRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: #00a9a9;">${row.label}</td>
+                <td style="color: white;">${row.value1}</td>
+                <td style="color: white;">${row.value2}</td>
+                <td style="color: white;">${row.value3}</td>
+            `;
+                    cummUptoPreBlkTable.appendChild(tr);
+                });
+
+                const cummUptoPreBlkREACTIVEPOWERRows = [
+                    { label: 'MVAr (<97% of V)', value1: cummUptoPreBlkData.P1, value2: cummUptoPreBlkData.P2, value3: cummUptoPreBlkData.P3 },
+                    { label: 'Gain/Lose(Rs)', value1: cummUptoPreBlkData.P4, value2: cummUptoPreBlkData.P5, value3: cummUptoPreBlkData.P6 },
+                    { label: 'MVAr (>103% of V)', value1: cummUptoPreBlkData.P7, value2: cummUptoPreBlkData.P8, value3: cummUptoPreBlkData.P9 },
+                    { label: 'Gain/Lose(Rs)', value1: cummUptoPreBlkData.P10, value2: cummUptoPreBlkData.P11, value3: cummUptoPreBlkData.P12 },
+                ]
+
+                cummUptoPreBlkREACTIVEPOWERRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: #00a9a9;">${row.label}</td>
+                <td style="color: white;">${row.value1}</td>
+                <td style="color: white;">${row.value2}</td>
+                <td style="color: white;">${row.value3}</td>
+            `;
+                    cummUptoPreBlkREACTIVEPOWERTable.appendChild(tr);
+                })
+
+                const cummUptoPreBlkTOTALRows = [
+                    { label: 'Gain/Lose', value1: cummUptoPreBlkData.P1, value2: cummUptoPreBlkData.P2, value3: cummUptoPreBlkData.P3 },
+                ]
+
+                cummUptoPreBlkTOTALRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: #00a9a9;">${row.label}</td>
+                <td style="color: white;">${row.value1}</td>
+                <td style="color: white;">${row.value2}</td>
+                <td style="color: white;">${row.value3}</td>
+            `;
+                    cummUptoPreBlkTOTAL.appendChild(tr)
+                })
+
+                const acpFuelCostFrequencyRows = [
+                    { label: 'ACP(RS./kWh)', value: acpFuelCostFrequency.P1 },
+                    { label: 'Fuel Cost Ph-1(Rs./kWh)', value: acpFuelCostFrequency.P2 },
+                    { label: 'Fuel Cost Ph-2(Rs./kWh)', value: acpFuelCostFrequency.P3 },
+                    { label: 'Avg.Freq.up to prev.block', value: acpFuelCostFrequency.P4 },
+                ];
+
+                acpFuelCostFrequencyRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: #00ffff;">${row.label}</td>
+                <td style="color: white;">${row.value}</td>
+            `;
+                    acpFuelCostFrequencyTable.appendChild(tr);
+                });
+
+                const normalRateRows = [
+                    { blockNo: 9, dam: normalRate.P1, rtm: normalRate.P2, nrate: normalRate.P3 },
+                    { blockNo: 10, dam: normalRate.P4, rtm: normalRate.P5, nrate: normalRate.P6 },
+                    { blockNo: 11, dam: normalRate.P7, rtm: normalRate.P8, nrate: normalRate.P9 },
+                    { blockNo: 12, dam: normalRate.P10, rtm: normalRate.P11, nrate: normalRate.P12 },
+                ];
+
+                normalRateRows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                <td style="color: white;">${row.blockNo}</td>
+                <td style="color: white;">${row.dam}</td>
+                <td style="color: white;">${row.rtm}</td>
+                <td style="color: white;">${row.nrate}</td>
+            `;
+                    normalRateTable.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        window.onload = function () {
+            fetchData();
+        };
+
+    </script>
+    <footer class="footer">
+        <p>&copy; 2024 My Website</p>
+    </footer>
+</body>
+
+</html>
