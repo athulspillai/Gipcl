@@ -20,7 +20,7 @@
     </header>
     <main>
         <div class="header-container">
-            <h2 class="table-title">GIPCL-SLPP Phase-1 DSM Monitoring</h2>
+            <h2 class="table-title">GIPCL-SLPP Phase-2 DSM Monitoring</h2>
             <span class="date-time">
                 Date: <span id="current-date" style="padding: 0 15px;"></span>
                 Time: <span id="current-time" style="padding: 0 15px;"></span>
@@ -400,33 +400,34 @@
                 });
 
                 const realTimeRows = [
-                    { label: 'GEN-1', mw: realTimeGenerationData.P1, mvar: realTimeGenerationData.P2, volt: realTimeGenerationData.P3, amp: realTimeGenerationData.P4, pf: realTimeGenerationData.P5 },
-                    { label: 'GEN-2', mw: realTimeGenerationData.P6, mvar: realTimeGenerationData.P7, volt: realTimeGenerationData.P8, amp: realTimeGenerationData.P9, pf: realTimeGenerationData.P10 },
+                    { label: 'GEN-3', mw: realTimeGenerationData.P1, mvar: realTimeGenerationData.P2, volt: realTimeGenerationData.P3, amp: realTimeGenerationData.P4, pf: realTimeGenerationData.P5 },
+                    { label: 'GEN-4', mw: realTimeGenerationData.P6, mvar: realTimeGenerationData.P7, volt: realTimeGenerationData.P8, amp: realTimeGenerationData.P9, pf: realTimeGenerationData.P10 },
                     { label: 'TOTAL', mw: realTimeGenerationData.P11, mvar: realTimeGenerationData.P12, volt: '', amp: '', pf: '' }, // Assuming TOTAL does not have volt, amp, pf
                     { label: 'Inst.Aux.Cons(MWh)', mw: '', mvar: realTimeGenerationData.P13, volt: 'Inst.Aux.Cons(%)', amp: '', pf: realTimeGenerationData.P14 },
                     { label: 'Cumm.Aux.Cons(MWh)', mw: '', mvar: realTimeGenerationData.P15, volt: 'Cumm.Aux.Cons(%)', amp: '', pf: realTimeGenerationData.P16 }
                 ];
 
                 realTimeRows.forEach(row => {
+                    const labelColor = (row.label === 'Inst.Aux.Cons(MWh)' || row.label === 'Cumm.Aux.Cons(MWh)') ? '#860389' : '#00ffff';
+                    const voltColor = (row.volt === 'Inst.Aux.Cons(%)' || row.volt === 'Cumm.Aux.Cons(%)') ? '#860389' : 'white';
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                <td style="color: #00ffff;">${row.label}</td>
-                <td style="color: white;">${row.mw}</td>
-                <td style="color: white;">${row.mvar}</td>
-                <td style="color: white;">${row.volt}</td>
-                <td style="color: white;">${row.amp}</td>
-                <td style="color: white;">${row.pf}</td>
-            `;
+                    <td style="color: ${labelColor};">${row.label}</td>
+                    <td style="color: white;">${row.mw}</td>
+                    <td style="color: white;">${row.mvar}</td>
+                    <td style="color: ${voltColor};">${row.volt}</td>
+                    <td style="color: white;">${row.amp}</td>
+                    <td style="color: white;">${row.pf}</td>
+                `;
                     realTimeGenerationTbody.appendChild(tr);
                 });
 
                 const expImpRows = [
-                    { label: 'KJ', expMW: realTimeExpImpData.P1, impMVV: realTimeExpImpData.P2, mvar: realTimeExpImpData.P3, volt: realTimeExpImpData.P4, amp: realTimeExpImpData.P5, pf: realTimeExpImpData.P6 },
-                    { label: 'GV-4', expMW: realTimeExpImpData.P7, impMVV: realTimeExpImpData.P8, mvar: realTimeExpImpData.P9, volt: realTimeExpImpData.P10, amp: realTimeExpImpData.P11, pf: realTimeExpImpData.P12 },
-                    { label: 'ZL-1', expMW: realTimeExpImpData.P13, impMVV: realTimeExpImpData.P14, mvar: realTimeExpImpData.P15, volt: realTimeExpImpData.P16, amp: realTimeExpImpData.P17, pf: realTimeExpImpData.P18 },
-                    { label: 'ZL-2', expMW: realTimeExpImpData.P19, impMVV: realTimeExpImpData.P20, mvar: realTimeExpImpData.P21, volt: realTimeExpImpData.P22, amp: realTimeExpImpData.P23, pf: realTimeExpImpData.P24 },
-                    { label: 'I/C-A', expMW: realTimeExpImpData.P1, impMVV: realTimeExpImpData.P2, mvar: realTimeExpImpData.P3, volt: realTimeExpImpData.P4, amp: realTimeExpImpData.P5, pf: realTimeExpImpData.P6 },
-                    { label: 'I/C-B', expMW: realTimeExpImpData.P7, impMVV: realTimeExpImpData.P8, mvar: realTimeExpImpData.P9, volt: realTimeExpImpData.P10, amp: realTimeExpImpData.P11, pf: realTimeExpImpData.P12 },
+                    { label: 'AD-1', expMW: realTimeExpImpData.P1, impMVV: realTimeExpImpData.P2, mvar: realTimeExpImpData.P3, volt: realTimeExpImpData.P4, amp: realTimeExpImpData.P5, pf: realTimeExpImpData.P6 },
+                    { label: 'AD-2', expMW: realTimeExpImpData.P7, impMVV: realTimeExpImpData.P8, mvar: realTimeExpImpData.P9, volt: realTimeExpImpData.P10, amp: realTimeExpImpData.P11, pf: realTimeExpImpData.P12 },
+                    { label: 'I/C-A', expMW: realTimeExpImpData.P13, impMVV: realTimeExpImpData.P14, mvar: realTimeExpImpData.P15, volt: realTimeExpImpData.P16, amp: realTimeExpImpData.P17, pf: realTimeExpImpData.P18 },
+                    { label: 'I/C-B', expMW: realTimeExpImpData.P19, impMVV: realTimeExpImpData.P20, mvar: realTimeExpImpData.P21, volt: realTimeExpImpData.P22, amp: realTimeExpImpData.P23, pf: realTimeExpImpData.P24 },
                     { label: 'TOTAL', expMW: realTimeExpImpData.P13, impMVV: realTimeExpImpData.P14, mvar: realTimeExpImpData.P15, volt: realTimeExpImpData.P16, amp: '', pf: '' }, // Assuming TOTAL does not have volt, amp, pf
                 ];
 
@@ -453,9 +454,6 @@
             fetchData();
         };
     </script>
-    <footer class="footer">
-        <p>&copy; 2024 My Website</p>
-    </footer>
 </body>
 
 </html>

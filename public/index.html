@@ -232,12 +232,17 @@
 
                 previousBlockRows.forEach(row => {
                     const tr = document.createElement('tr');
+                    const value = row.value !== null && row.value !== undefined ? row.value : 'undefined';
+
                     tr.innerHTML = `
                     <td style="color: #00ffff;">${row.label}</td>
                     <td style="color: ${typeof row.value === 'number' ? (row.value < 0 ? 'red' : 'white') : 'white'};">
-                    ${row.value !== null ? (row.value < 0 ? `<span style="color: red;">${row.value}</span>` : row.value) : ''}
+                      ${row.value !== null && row.value !== undefined
+                            ? (row.value < 0 ? `<span style="color: red;">${row.value}</span>` : row.value)
+                            : 'undefined'}
                     </td>
                 `;
+
                     previousBlockTbody.appendChild(tr);
                 });
 
@@ -270,10 +275,14 @@
 
                 currentBlockRows.forEach(row => {
                     const tr = document.createElement('tr');
+                    const value = row.value !== null && row.value !== undefined ? row.value : 'undefined';
+
                     tr.innerHTML = `
                     <td style="color: #cccc00;">${row.label}</td>
                     <td style="color: ${typeof row.value === 'number' ? (row.value < 0 ? 'red' : '#00e800') : '#00e800'};">
-                    ${row.value !== null ? (row.value < 0 ? `<span style="color: red;">${row.value}</span>` : row.value) : ''}
+                        ${row.value !== null && row.value !== undefined
+                            ? (row.value < 0 ? `<span style="color: red;">${row.value}</span>` : row.value)
+                            : 'undefined'}
                     </td>
             `;
                     currentBlockTbody.appendChild(tr);
@@ -293,7 +302,7 @@
                 previousBlockStatusRows.forEach(row => {
                     const tr = document.createElement('tr');
 
-                    // Check if the row is the 'Average' row and apply specific color logic
+                    // Function to determine text color
                     const getColor = (value) => {
                         if (row.blockNo === 'Average') {
                             return value < 0 ? 'red' : '#00e800';
@@ -301,18 +310,20 @@
                         return value < 0 ? 'red' : 'white';
                     };
 
+                    // Function to handle undefined or null values
+                    const getValue = (value) => (value !== null && value !== undefined ? value : 'undefined');
+
                     // Generate table row with conditional color styling
                     tr.innerHTML = `
-                    <td style="color: ${row.blockNo === 'Average' ? '#00e800' : 'white'};">${row.blockNo}</td>
-                    <td style="color: ${getColor(row.frequency)};">${row.frequency}</td>
-                    <td style="color: ${getColor(row.sg)};">${row.sg}</td>
-                    <td style="color: ${getColor(row.netExport)};">${row.netExport}</td>
-                    <td style="color: ${getColor(row.devMW)};">${row.devMW}</td>
-                     `;
+                    <td style="color: ${row.blockNo === 'Average' ? '#00e800' : 'white'};">${getValue(row.blockNo)}</td>
+                    <td style="color: ${getColor(row.frequency)};">${getValue(row.frequency)}</td>
+                    <td style="color: ${getColor(row.sg)};">${getValue(row.sg)}</td>
+                    <td style="color: ${getColor(row.netExport)};">${getValue(row.netExport)}</td>
+                    <td style="color: ${getColor(row.devMW)};">${getValue(row.devMW)}</td>
+                `;
+
                     previousBlockStatusTbody.appendChild(tr);
                 });
-
-
 
                 // Populate the Fuel Cost / Frequency table
                 const fuelCostFrequencyRows = [
@@ -324,27 +335,32 @@
                 fuelCostFrequencyRows.forEach(row => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                <td style="color: #00ffff;">${row.label}</td>
-                <td style="color: white;">${row.value !== null ? row.value : ''}</td>
-            `;
+                    <td style="color: #00ffff;">${row.label}</td>
+                    <td style="color: white;">${row.value !== null ? row.value : 'undefined'}</td>
+                `;
                     fuelCostFrequencyTbody.appendChild(tr);
                 });
 
                 const nextBlockRows = [
-                    { blockNo: previousBlockStatus.P1, blockTime: '02:00-02:15', dcMW: previousBlockData.P5, sgMW: previousBlockData.P9 }, // Example data
-                    { blockNo: previousBlockStatus.P2, blockTime: '02:15-02:30', dcMW: previousBlockData.P6, sgMW: previousBlockData.P10 }, // Example data
-                    { blockNo: previousBlockStatus.P3, blockTime: '02:30-02:45', dcMW: previousBlockData.P7, sgMW: previousBlockData.P11 }, // Example data
-                    { blockNo: previousBlockStatus.P4, blockTime: '02:45-03:00', dcMW: previousBlockData.P8, sgMW: previousBlockData.P12 }, // Example data
+                    { blockNo: previousBlockStatus.P1, blockTime: '02:00-02:15', dcMW: previousBlockData.P5, sgMW: previousBlockData.P9 },
+                    { blockNo: previousBlockStatus.P2, blockTime: '02:15-02:30', dcMW: previousBlockData.P6, sgMW: previousBlockData.P10 },
+                    { blockNo: previousBlockStatus.P3, blockTime: '02:30-02:45', dcMW: previousBlockData.P7, sgMW: previousBlockData.P11 },
+                    { blockNo: previousBlockStatus.P4, blockTime: '02:45-03:00', dcMW: previousBlockData.P8, sgMW: previousBlockData.P12 },
                 ];
 
                 nextBlockRows.forEach(row => {
                     const tr = document.createElement('tr');
+
+                    // Function to handle undefined or null values
+                    const getValue = (value) => (value !== null && value !== undefined ? value : 'undefined');
+
                     tr.innerHTML = `
-                <td style="color: white;">${row.blockNo}</td>
-                <td style="color: white;">${row.blockTime}</td>
-                <td style="color: white;">${row.dcMW}</td>
-                <td style="color: white;">${row.sgMW}</td>
-            `;
+                    <td style="color: white;">${getValue(row.blockNo)}</td>
+                    <td style="color: white;">${getValue(row.blockTime)}</td>
+                    <td style="color: white;">${getValue(row.dcMW)}</td>
+                    <td style="color: white;">${getValue(row.sgMW)}</td>
+                `;
+
                     nextBlockTbody.appendChild(tr);
                 });
 
@@ -358,12 +374,17 @@
 
                 normalRateRows.forEach(row => {
                     const tr = document.createElement('tr');
+
+                    // Function to handle undefined or null values
+                    const getValue = (value) => (value !== null && value !== undefined ? value : 'undefined');
+
                     tr.innerHTML = `
-                <td style="color: white;">${row.blockNo}</td>
-                <td style="color: white;">${row.damRate}</td>
-                <td style="color: white;">${row.rtmRate}</td>
-                <td style="color: white;">${row.nrate}</td>
-            `;
+                    <td style="color: white;">${getValue(row.blockNo)}</td>
+                    <td style="color: white;">${getValue(row.damRate)}</td>
+                    <td style="color: white;">${getValue(row.rtmRate)}</td>
+                    <td style="color: white;">${getValue(row.nrate)}</td>
+                `;
+
                     normalRateTbody.appendChild(tr);
                 });
 
@@ -395,7 +416,7 @@
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                 <td style="color: #00a9a9;">${row.label}</td>
-                <td style="color: ${typeof row.value === 'number' ? (row.value < 0 ? 'red' : 'white') : 'white'};">${row.value !== null ? row.value : ''}</td>
+                <td style="color: ${typeof row.value === 'number' ? (row.value < 0 ? 'red' : 'white') : 'white'};">${row.value !== null ? row.value : 'undefined'}</td>
             `;
                     cumulativeTbody.appendChild(tr);
                 });
@@ -408,16 +429,23 @@
                     { label: 'Cumm.Aux.Cons(MWh)', mw: '', mvar: realTimeGenerationData.P15, volt: 'Cumm.Aux.Cons(%)', amp: '', pf: realTimeGenerationData.P16 }
                 ];
 
+                // Function to handle undefined or null values
+                const getValue = (value) => (value !== null && value !== undefined && value !== '' ? value : 'undefined');
+
                 realTimeRows.forEach(row => {
+                    const labelColor = (row.label === 'Inst.Aux.Cons(MWh)' || row.label === 'Cumm.Aux.Cons(MWh)') ? '#860389' : '#00ffff';
+                    const voltColor = (row.volt === 'Inst.Aux.Cons(%)' || row.volt === 'Cumm.Aux.Cons(%)') ? '#860389' : 'white';
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                <td style="color: #00ffff;">${row.label}</td>
-                <td style="color: white;">${row.mw}</td>
-                <td style="color: white;">${row.mvar}</td>
-                <td style="color: white;">${row.volt}</td>
-                <td style="color: white;">${row.amp}</td>
-                <td style="color: white;">${row.pf}</td>
-            `;
+                    <td style="color: ${labelColor};">${getValue(row.label)}</td>
+                    <td style="color: white;">${getValue(row.mw)}</td>
+                    <td style="color: white;">${getValue(row.mvar)}</td>
+                    <td style="color: ${voltColor};">${getValue(row.volt)}</td>
+                    <td style="color: white;">${getValue(row.amp)}</td>
+                    <td style="color: white;">${getValue(row.pf)}</td>
+                `;
+
                     realTimeGenerationTbody.appendChild(tr);
                 });
 
@@ -431,19 +459,24 @@
                     { label: 'TOTAL', expMW: realTimeExpImpData.P13, impMVV: realTimeExpImpData.P14, mvar: realTimeExpImpData.P15, volt: realTimeExpImpData.P16, amp: '', pf: '' }, // Assuming TOTAL does not have volt, amp, pf
                 ];
 
+                // Function to handle undefined or null values
+                const getValues = (value) => (value !== null && value !== undefined && value !== '' ? value : 'undefined');
+
                 expImpRows.forEach(row => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                <td style="color: #00ffff;">${row.label}</td>
-                <td style="color: white;">${row.expMW}</td>
-                <td style="color: white;">${row.impMVV}</td>
-                <td style="color: white;">${row.mvar}</td>
-                <td style="color: white;">${row.volt}</td>
-                <td style="color: white;">${row.amp}</td>
-                <td style="color: white;">${row.pf}</td>
-            `;
+                     <td style="color: #00ffff;">${getValues(row.label)}</td>
+                     <td style="color: white;">${getValues(row.expMW)}</td>
+                     <td style="color: white;">${getValues(row.impMVV)}</td>
+                     <td style="color: white;">${getValues(row.mvar)}</td>
+                     <td style="color: white;">${getValues(row.volt)}</td>
+                     <td style="color: white;">${getValues(row.amp)}</td>
+                     <td style="color: white;">${getValues(row.pf)}</td>
+                `;
+
                     realTimeExpImpTbody.appendChild(tr);
                 });
+
 
             } catch (error) {
                 console.error('Error fetching data:', error);
