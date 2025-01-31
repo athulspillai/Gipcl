@@ -246,6 +246,7 @@
                     previousBlockTbody.appendChild(tr);
                 });
 
+
                 // Populate the Current Block table with ID 2 data
                 const currentBlockRows = [
                     { label: 'Block No', value: currentBlockData.P1 },
@@ -325,6 +326,9 @@
                     previousBlockStatusTbody.appendChild(tr);
                 });
 
+
+
+
                 // Populate the Fuel Cost / Frequency table
                 const fuelCostFrequencyRows = [
                     { label: 'ACP(RS./kWh)', value: previousBlockData.P1 },
@@ -364,6 +368,7 @@
                     nextBlockTbody.appendChild(tr);
                 });
 
+
                 // Populate the Normal Rate table with data from previousBlockStatus
                 const normalRateRows = [
                     { blockNo: previousBlockStatus.P1, damRate: previousBlockStatus.P2, rtmRate: previousBlockStatus.P3, nrate: previousBlockStatus.P4 },
@@ -387,6 +392,7 @@
 
                     normalRateTbody.appendChild(tr);
                 });
+
 
                 // Populate the Cumulative table with data from cummUptoPreBlk
                 const cumulativeRows = [
@@ -429,25 +435,24 @@
                     { label: 'Cumm.Aux.Cons(MWh)', mw: '', mvar: realTimeGenerationData.P15, volt: 'Cumm.Aux.Cons(%)', amp: '', pf: realTimeGenerationData.P16 }
                 ];
 
-                // Function to handle undefined or null values
-                const getValue = (value) => (value !== null && value !== undefined && value !== '' ? value : 'undefined');
-
                 realTimeRows.forEach(row => {
                     const labelColor = (row.label === 'Inst.Aux.Cons(MWh)' || row.label === 'Cumm.Aux.Cons(MWh)') ? '#860389' : '#00ffff';
                     const voltColor = (row.volt === 'Inst.Aux.Cons(%)' || row.volt === 'Cumm.Aux.Cons(%)') ? '#860389' : 'white';
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                    <td style="color: ${labelColor};">${getValue(row.label)}</td>
-                    <td style="color: white;">${getValue(row.mw)}</td>
-                    <td style="color: white;">${getValue(row.mvar)}</td>
-                    <td style="color: ${voltColor};">${getValue(row.volt)}</td>
-                    <td style="color: white;">${getValue(row.amp)}</td>
-                    <td style="color: white;">${getValue(row.pf)}</td>
+                    <td style="color: ${labelColor};">${row.label}</td>
+                    <td style="color: white;">${row.mw}</td>
+                    <td style="color: white;">${row.mvar}</td>
+                    <td style="color: ${voltColor};">${row.volt}</td>
+                    <td style="color: white;">${row.amp}</td>
+                    <td style="color: white;">${row.pf}</td>
                 `;
 
                     realTimeGenerationTbody.appendChild(tr);
                 });
+
+
 
                 const expImpRows = [
                     { label: 'KJ', expMW: realTimeExpImpData.P1, impMVV: realTimeExpImpData.P2, mvar: realTimeExpImpData.P3, volt: realTimeExpImpData.P4, amp: realTimeExpImpData.P5, pf: realTimeExpImpData.P6 },
@@ -459,24 +464,19 @@
                     { label: 'TOTAL', expMW: realTimeExpImpData.P13, impMVV: realTimeExpImpData.P14, mvar: realTimeExpImpData.P15, volt: realTimeExpImpData.P16, amp: '', pf: '' }, // Assuming TOTAL does not have volt, amp, pf
                 ];
 
-                // Function to handle undefined or null values
-                const getValues = (value) => (value !== null && value !== undefined && value !== '' ? value : 'undefined');
-
                 expImpRows.forEach(row => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                     <td style="color: #00ffff;">${getValues(row.label)}</td>
-                     <td style="color: white;">${getValues(row.expMW)}</td>
-                     <td style="color: white;">${getValues(row.impMVV)}</td>
-                     <td style="color: white;">${getValues(row.mvar)}</td>
-                     <td style="color: white;">${getValues(row.volt)}</td>
-                     <td style="color: white;">${getValues(row.amp)}</td>
-                     <td style="color: white;">${getValues(row.pf)}</td>
-                `;
-
+                <td style="color: #00ffff;">${row.label}</td>
+                <td style="color: white;">${row.expMW}</td>
+                <td style="color: white;">${row.impMVV}</td>
+                <td style="color: white;">${row.mvar}</td>
+                <td style="color: white;">${row.volt}</td>
+                <td style="color: white;">${row.amp}</td>
+                <td style="color: white;">${row.pf}</td>
+            `;
                     realTimeExpImpTbody.appendChild(tr);
                 });
-
 
             } catch (error) {
                 console.error('Error fetching data:', error);
